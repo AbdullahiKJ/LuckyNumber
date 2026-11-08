@@ -81,6 +81,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fb27c8a4cb22e49149c046a91dba6266, type: 3}
       insertIndex: -1
       addedObject: {fileID: -5334457367151956846}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fb27c8a4cb22e49149c046a91dba6266, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5020028599509967691}
   m_SourcePrefab: {fileID: 100100000, guid: fb27c8a4cb22e49149c046a91dba6266, type: 3}
 --- !u!1 &6376223923965819836 stripped
 GameObject:
@@ -147,5 +150,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88b9409cfb3ce478c87e476d6fda287b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dice
-  rollForce: 10
-  torqueForce: 5
+  minRollForce: 5
+  maxRollForce: 10
+  minTorqueForce: 5
+  maxTorqueForce: 5
+--- !u!114 &5020028599509967691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6376223923965819836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdff49cb1e01540f294673f4bcb2a243, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HoverOutline
+  outlineVisual: {fileID: 0}

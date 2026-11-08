@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class Dice : MonoBehaviour
@@ -11,6 +10,7 @@ public class Dice : MonoBehaviour
     private int result;
     public int Result { get { return result; } }
     bool isRolling = false;
+    public event System.Action<Dice, int> RollCompleted;
 
     private void OnEnable()
     {
@@ -35,6 +35,17 @@ public class Dice : MonoBehaviour
 
         // Wait a short time before setting the isRolling flag to allow the dice to start moving
         Invoke("StartRolling", .1f);
+    }
+
+    public void SetHeld(bool held)
+    {
+        if (held)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        rb.isKinematic = held;
     }
 
     private void StartRolling()
@@ -73,5 +84,8 @@ public class Dice : MonoBehaviour
             result = 4;
         }
         Debug.Log(result);
+
+        // Pass the result to the dice manager
+        RollCompleted?.Invoke(this, result);
     }
 }

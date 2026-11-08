@@ -11,7 +11,7 @@ public class TurnManager : MonoBehaviour
 
     // Roll and turn management
     private int rollsRemaining;
-    private int maxRolls;
+    [SerializeField] private int maxRolls = 2;
     public bool IsPlayerTurn => turnQueue.First?.Value.state == TurnState.PlayerTurn;
     private readonly LinkedList<(TurnState state, Enemy enemy)> turnQueue = new();
 
@@ -72,13 +72,13 @@ public class TurnManager : MonoBehaviour
     public void StartPlayerTurn()
     {
         rollsRemaining = maxRolls;
+        diceManager.ResetForPlayerTurn();
     }
 
     public void UseRoll()
     {
-        if (rollsRemaining > 0)
+        if (IsPlayerTurn && rollsRemaining > 0 && diceManager.TryRollDice())
         {
-            diceManager.RollDice();
             rollsRemaining--;
         }
     }

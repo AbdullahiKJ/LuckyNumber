@@ -1323,9 +1323,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7695038878700202725}
+  - component: {fileID: 1421786617665040575}
   - component: {fileID: 7695038878690313497}
   - component: {fileID: 4217216740327769424}
   - component: {fileID: -4626755010240135202}
+  - component: {fileID: 7299256345396629291}
   m_Layer: 0
   m_Name: SkeletonPAMaskTint
   m_TagString: Untagged
@@ -1350,6 +1352,29 @@ Transform:
   - {fileID: 7695038878700202667}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &1421786617665040575
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7695038878699845317}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.010155
+  m_Height: 2.182632
+  m_Direction: 1
+  m_Center: {x: 0.0115942955, y: 0.9101629, z: 0}
 --- !u!95 &7695038878690313497
 Animator:
   serializedVersion: 7
@@ -1407,6 +1432,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Health
   maxHealth: 100
   attackDamage: 1
+--- !u!114 &7299256345396629291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7695038878699845317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdff49cb1e01540f294673f4bcb2a243, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HoverOutline
+  outlineVisual: {fileID: 0}
 --- !u!1 &7695038878699845319
 GameObject:
   m_ObjectHideFlags: 0

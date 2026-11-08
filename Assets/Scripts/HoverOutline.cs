@@ -1,13 +1,18 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Outline))]
 public class HoverOutline : MonoBehaviour
 {
-    [SerializeField] private GameObject outlineVisual;
+    private Outline outline;
 
-    private void Awake() => SetVisible(false);
+    private void Awake()
+    {
+        outline = GetComponent<Outline>();
+        SetVisible(false);
+    }
 
     public void SetVisible(bool visible)
     {
-        outlineVisual.SetActive(visible);
+        outline.enabled = visible;
     }
 }

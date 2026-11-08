@@ -3,3 +3,5 @@ Farm Game UI - Starter 2D by maanetorn (Unity Store)
 "Dice" (https://skfb.ly/6RtsC) by tnRaro is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 FREE Minimalist Table by Monqo Studios (Unity Store)
 3D Card Kit - Fantasy by @Quaternius
+Sweet Land GUI by Persefida (Unity Store)
+Quick Outline by Chris Nolet (Unity Store)

@@ -26,6 +26,7 @@ public class TurnManager : MonoBehaviour
         uiManager = GetComponent<UIManager>();
         combatManager = GetComponent<CombatManager>();
         diceManager = GetComponent<DiceManager>();
+        gameManager = GetComponent<GameManager>();
 
         rollsRemaining = maxRolls;
 

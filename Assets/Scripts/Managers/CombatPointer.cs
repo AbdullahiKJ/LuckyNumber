@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class CombatPoint : MonoBehaviour
+public class CombatPointer : MonoBehaviour
 {
     [SerializeField] Camera gameplayCamera;
 

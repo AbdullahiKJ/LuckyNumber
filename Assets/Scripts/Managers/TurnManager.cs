@@ -12,7 +12,7 @@ public class TurnManager : MonoBehaviour
     // Roll and turn management
     private int rollsRemaining;
     private int maxRolls;
-    bool isPlayerTurn;
+    public bool IsPlayerTurn => turnQueue.First?.Value.state == TurnState.PlayerTurn;
     private readonly LinkedList<(TurnState state, Enemy enemy)> turnQueue = new();
 
     enum TurnState
@@ -28,6 +28,9 @@ public class TurnManager : MonoBehaviour
         diceManager = GetComponent<DiceManager>();
 
         rollsRemaining = maxRolls;
+
+        // todo: remove later
+        BuildRoundQueue();
     }
 
     public void BuildRoundQueue()
@@ -57,7 +60,6 @@ public class TurnManager : MonoBehaviour
             switch (state)
             {
                 case TurnState.PlayerTurn:
-                    isPlayerTurn = true;
                     StartPlayerTurn();
                     break;
                 case TurnState.EnemyTurn:
@@ -72,7 +74,7 @@ public class TurnManager : MonoBehaviour
         rollsRemaining = maxRolls;
     }
 
-    private void UseRoll()
+    public void UseRoll()
     {
         if (rollsRemaining > 0)
         {
@@ -81,10 +83,10 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    private void EndPlayerTurn()
+    public void EndPlayerTurn()
     {
-        isPlayerTurn = false;
-        EndTurn();
+        if (IsPlayerTurn)
+            EndTurn();
     }
 
     public void GrantExtraPlayerTurn()
@@ -131,15 +133,15 @@ public class TurnManager : MonoBehaviour
 
     private void RefreshTurnUI()
     {
-        var labels = new List<string>(turnQueue.Count);
+        var rows = new List<(bool isPlayer, string label)>(turnQueue.Count);
 
         foreach (var (state, enemy) in turnQueue)
         {
-            labels.Add(state == TurnState.PlayerTurn
-                ? "Player"
-                : enemy != null ? enemy.gameObject.name : "Enemy");
+            bool isPlayer = state == TurnState.PlayerTurn;
+            string label = isPlayer ? "Player" : enemy != null ? enemy.name : "Enemy";
+            rows.Add((isPlayer, label));
         }
 
-        uiManager.UpdateTurnUI(labels);
+        uiManager.UpdateTurnUI(rows);
     }
 }

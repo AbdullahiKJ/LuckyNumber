@@ -17,8 +17,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform enemyHealthBarLayer;
 
     [Header("Turn UI")]
-    [SerializeField] private Text turnOrderText;
-
+    [SerializeField] private GameObject playerTurnPrefab;
+    [SerializeField] private GameObject enemyTurnPrefab;
+    [SerializeField] private RectTransform turnBackground;
+    private readonly List<GameObject> turnRows = new();
 
     private void Awake()
     {
@@ -63,11 +65,26 @@ public class UIManager : MonoBehaviour
         label.text = $"{current:0.#} / {max:0.#}";
     }
 
-    public void UpdateTurnUI(IReadOnlyList<string> turns)
+    public void UpdateTurnUI(IReadOnlyList<(bool isPlayer, string label)> turns)
     {
-        turnOrderText.text = turns.Count == 0
-        ? string.Empty
-        : $"> {string.Join("\n", turns)}";
-    }
+        foreach (GameObject row in turnRows)
+        {
+            row.SetActive(false);
+            Destroy(row);
+        }
 
+        turnRows.Clear();
+
+        for (int i = 0; i < turns.Count; i++)
+        {
+            var (isPlayer, label) = turns[i];
+            GameObject prefab = isPlayer ? playerTurnPrefab : enemyTurnPrefab;
+            GameObject row = Instantiate(prefab, turnBackground, false);
+
+            TextMeshProUGUI rowText = row.GetComponentInChildren<TextMeshProUGUI>();
+            rowText.text = i == 0 ? $"> {label}" : label;
+
+            turnRows.Add(row);
+        }
+    }
 }

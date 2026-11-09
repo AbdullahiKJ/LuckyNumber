@@ -41,16 +41,6 @@ public class CombatPointer : MonoBehaviour
             return;
         }
 
-        Dice die = hit.collider.GetComponentInParent<Dice>();
-        if (dice.CanHold(die))
-        {
-            SetHovered(die.GetComponent<HoverOutline>());
-            if (mouse.leftButton.wasPressedThisFrame)
-                dice.ToggleDieSelection(die);
-
-            return;
-        }
-
         Enemy enemy = hit.collider.GetComponentInParent<Enemy>();
         if (enemy != null && enemy.isActiveAndEnabled && enemy.IsAlive)
         {

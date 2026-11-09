@@ -14,10 +14,18 @@ public class DiceManager : MonoBehaviour
 
     private void OnEnable()
     {
+        GameManager gameManager = GetComponent<GameManager>();
+        TurnManager turnManager = GetComponent<TurnManager>();
+
         foreach (GameObject dieObject in allDice)
         {
             if (dieObject != null && dieObject.TryGetComponent(out Dice die))
+            {
                 die.RollCompleted += OnDieRollCompleted;
+                die.DiceManager = this;
+                die.GameManager = gameManager;
+                die.TurnManager = turnManager;
+            }
         }
     }
 

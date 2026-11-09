@@ -1,91 +1,78 @@
+using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Dice : MonoBehaviour
 {
-    private Rigidbody rb;
-    [SerializeField] private float minRollForce = 5f;
-    [SerializeField] private float maxRollForce = 10f;
-    [SerializeField] private float minTorqueForce = 5f;
-    [SerializeField] private float maxTorqueForce = 5f;
-    private int result;
-    public int Result { get { return result; } }
-    bool isRolling = false;
-    public event System.Action<Dice, int> RollCompleted;
+    [Header("UI")]
+    [SerializeField] private Image faceRenderer;
+    [SerializeField] private Button button;
+    [SerializeField] private Sprite[] faces = new Sprite[6];
+    [SerializeField] private int fastFrames = 30;
+    [SerializeField] private float minSlowTime = 0.06f;
+    [SerializeField] private float maxSlowTime = 0.20f;
+    [SerializeField] private Color heldTint = Color.goldenRod;
 
-    private void OnEnable()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
 
-    private void FixedUpdate()
+    [Header("Managers")]
+    public GameManager GameManager;
+    public DiceManager DiceManager;
+    public TurnManager TurnManager;
+
+    public int Result { get; private set; }
+    public bool IsHeld { get; private set; }
+    public event Action<Dice, int> RollCompleted;
+
+    private bool isRolling;
+
+    public void OnClick()
     {
-        // Wait for the linear and angular velocities to die down before checking the result
-        if (isRolling && rb.linearVelocity.magnitude < 0.1f && rb.angularVelocity.magnitude < 0.1f)
+        if (GameManager.IsGameActive() && TurnManager.IsPlayerTurn)
         {
-            isRolling = false;
-            CheckResult();
+            DiceManager.ToggleDieSelection(this);
         }
-    }
-    public void Roll()
-    {
-        float rollForce = Random.Range(minRollForce, maxRollForce);
-        float torqueForce = Random.Range(minTorqueForce, maxTorqueForce);
-        rb.AddForce(Vector3.up * rollForce, ForceMode.Impulse);
-        rb.AddTorque(Random.insideUnitSphere * torqueForce, ForceMode.Impulse);
-
-        // Wait a short time before setting the isRolling flag to allow the dice to start moving
-        Invoke("StartRolling", .1f);
     }
 
     public void SetHeld(bool held)
     {
-        if (held)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
-
-        rb.isKinematic = held;
+        IsHeld = held;
+        ColorBlock block = button.colors;
+        block.normalColor = held ? heldTint : Color.white;
+        button.colors = block;
     }
 
-    private void StartRolling()
+    public void Roll()
     {
+        if (isRolling || IsHeld)
+            return;
+
         isRolling = true;
+        StartCoroutine(AnimateRoll());
     }
 
-    private void CheckResult()
+    private IEnumerator AnimateRoll()
     {
-        // Get the upwards facing side of the dice by performing dot products
-        Vector3 up = transform.up;
-        Vector3 forward = transform.forward;
+        int finalFace = UnityEngine.Random.Range(1, 7);
+        int previewFace = Result > 0 ? Result - 1 : 0;
+        int fastSwaps = UnityEngine.Random.Range(9, 15);
+        const int slowSwaps = 5;
 
-        if (forward.y > 0.5f)
+        for (int i = 0; i < fastSwaps + slowSwaps; i++)
         {
-            result = 1;
-        }
-        else if (forward.y < -0.5f)
-        {
-            result = 6;
-        }
-        else if (up.x > 0.5f)
-        {
-            result = 2;
-        }
-        else if (up.x < -0.5f)
-        {
-            result = 5;
-        }
-        else if (forward.z > 0.5f)
-        {
-            result = 3;
-        }
-        else
-        {
-            result = 4;
-        }
-        Debug.Log(result);
+            previewFace = (previewFace + UnityEngine.Random.Range(1, 6)) % 6;
+            faceRenderer.sprite = faces[previewFace];
 
-        // Pass the result to the dice manager
-        RollCompleted?.Invoke(this, result);
+            float delay = i < fastSwaps
+                ? 1f / fastFrames
+                : Mathf.Lerp(minSlowTime, maxSlowTime, (i - fastSwaps) / (slowSwaps - 1f));
+
+            yield return new WaitForSeconds(delay);
+        }
+
+        faceRenderer.sprite = faces[finalFace - 1];
+        Result = finalFace;
+        isRolling = false;
+        RollCompleted?.Invoke(this, Result);
     }
 }

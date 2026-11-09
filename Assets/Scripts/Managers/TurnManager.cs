@@ -41,7 +41,9 @@ public class TurnManager : MonoBehaviour
 
         foreach (Enemy enemy in combatManager.Enemies)
         {
-            if (enemy.isActiveAndEnabled)
+            // todo: put this back later
+            // if (enemy.isActiveAndEnabled)
+            if (enemy != null)
             {
                 turnQueue.AddLast((TurnState.EnemyTurn, enemy));
             }

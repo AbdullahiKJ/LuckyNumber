@@ -204,7 +204,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7695038878699845317, guid: 443afc2412d74f44be8d5241437e576a, type: 3}
       propertyPath: m_Name
-      value: SkeletonPAMaskTint (1)
+      value: Skeleton
       objectReference: {fileID: 0}
     - target: {fileID: 7695038878700202725, guid: 443afc2412d74f44be8d5241437e576a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -700,7 +700,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7695038878699845317, guid: 443afc2412d74f44be8d5241437e576a, type: 3}
       propertyPath: m_Name
-      value: SkeletonPAMaskTint
+      value: Skeleton
       objectReference: {fileID: 0}
     - target: {fileID: 7695038878700202725, guid: 443afc2412d74f44be8d5241437e576a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1086,7 +1086,7 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
+  m_ReverseArrangement: 1
 --- !u!114 &854307974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1474,6 +1474,18 @@ PrefabInstance:
       propertyPath: m_Value
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1699767607318683170, guid: 50efc5f97e1c44cbfae144ef137d9a50, type: 3}
+      propertyPath: m_text
+      value: 100/100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1699767607318683170, guid: 50efc5f97e1c44cbfae144ef137d9a50, type: 3}
+      propertyPath: m_fontSize
+      value: 63.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1699767607318683170, guid: 50efc5f97e1c44cbfae144ef137d9a50, type: 3}
+      propertyPath: m_TextWrappingMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3148066266450924255, guid: 50efc5f97e1c44cbfae144ef137d9a50, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1481,6 +1493,10 @@ PrefabInstance:
     - target: {fileID: 3148066266450924255, guid: 50efc5f97e1c44cbfae144ef137d9a50, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790919218178262214, guid: 50efc5f97e1c44cbfae144ef137d9a50, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 8957374342863868199, guid: 50efc5f97e1c44cbfae144ef137d9a50, type: 3}
       propertyPath: m_Name

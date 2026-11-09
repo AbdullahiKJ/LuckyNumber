@@ -21,6 +21,11 @@ public class Player : MonoBehaviour
         currentHealth = maxHealth;
     }
 
+    private void Start()
+    {
+        HealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
     public void Attack(Enemy enemy, int value)
     {
         enemy.TakeDamage(value * attackMultiplier);

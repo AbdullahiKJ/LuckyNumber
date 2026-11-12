@@ -1432,8 +1432,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   animation: {fileID: 4217216740327769424}
+  Turn: {fileID: 0}
   maxHealth: 100
-  attackDamage: 1
+  attackDamage: 5
 --- !u!114 &7299256345396629291
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -22,6 +20,9 @@ namespace FGUIStarter
 
         public override void OnPointerDown(PointerEventData eventData)
         {
+            if (!base.IsInteractable())
+                return;
+
             base.OnPointerDown(eventData);
             isHeld = true;
             ApplyPressedVisual();

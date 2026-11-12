@@ -10,6 +10,7 @@ public class DiceManager : MonoBehaviour
     private readonly HashSet<Dice> selectedDice = new();
 
     public bool IsRolling => pendingDice.Count > 0;
+    public event Action RollStarted;
     public event Action RollFinished;
 
     private void OnEnable()
@@ -62,6 +63,9 @@ public class DiceManager : MonoBehaviour
         // Exit early if there are no pending die
         if (!IsRolling)
             return false;
+
+        // Invoke the roll started event
+        RollStarted?.Invoke();
 
         // Roll the die
         foreach (Dice die in pendingDice)

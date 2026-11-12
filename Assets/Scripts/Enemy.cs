@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    // Referencees
+    [SerializeField] AnimationController animation;
+    public TurnManager Turn;
+
     // Health
     [SerializeField] private float maxHealth = 100f;
     private float currentHealth;
@@ -11,18 +15,28 @@ public class Enemy : MonoBehaviour
     public bool IsAlive => currentHealth > 0f;
     public event Action<float, float> HealthChanged;
 
-
     // Attack
     [SerializeField] private float attackDamage = 1f;
+    Player target;
 
     private void Awake()
     {
         currentHealth = maxHealth;
     }
 
-    public void Attack(Player player)
+    public void StartAttackAnimation(Player player = null)
     {
-        player.TakeDamage(attackDamage);
+        target = player;
+        animation.TriggerAttack();
+    }
+
+    public void Attack()
+    {
+        if (target == null)
+            return;
+
+        target.TakeDamage(attackDamage);
+        target = null;
     }
 
     public void TakeDamage(float damage)
@@ -35,11 +49,28 @@ public class Enemy : MonoBehaviour
 
         if (!IsAlive)
             Die();
+
+        // Play the hit animation
+        animation.TriggerHit();
     }
 
     private void Die()
     {
+        // Play the death animation
+        animation.TriggerDie();
+
         // todo: Handle death logic here
         Debug.Log($"{gameObject.name} has died.");
+    }
+
+    // Animation events for ending turns after playing attack, hit and die animations
+    public void EndTurn()
+    {
+        Turn.Invoke("EndTurn", Turn.TurnDelay);
+    }
+
+    public void EndPlayerTurn()
+    {
+        Turn.Invoke("EndPlayerTurn", Turn.TurnDelay);
     }
 }

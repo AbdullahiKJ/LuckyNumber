@@ -1431,6 +1431,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33728891813b74abb929c22b3f91e679, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
+  animation: {fileID: 4217216740327769424}
   maxHealth: 100
   attackDamage: 1
 --- !u!114 &7299256345396629291
@@ -1445,7 +1446,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdff49cb1e01540f294673f4bcb2a243, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HoverOutline
-  outlineVisual: {fileID: 0}
 --- !u!114 &2945291989593350961
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,6 +12,8 @@ public class TurnManager : MonoBehaviour
     // Roll and turn management
     private int rollsRemaining;
     [SerializeField] private int maxRolls = 2;
+    [SerializeField] private float turnDelay = 2f;
+    public float TurnDelay => turnDelay;
     public bool IsPlayerTurn => turnQueue.First?.Value.state == TurnState.PlayerTurn;
     private readonly LinkedList<(TurnState state, Enemy enemy)> turnQueue = new();
 
@@ -75,6 +77,8 @@ public class TurnManager : MonoBehaviour
     public void StartPlayerTurn()
     {
         rollsRemaining = maxRolls;
+        uiManager.UpdateRollsUI(rollsRemaining);
+        uiManager.EnableRollButton();
         diceManager.ResetForPlayerTurn();
     }
 
@@ -83,6 +87,7 @@ public class TurnManager : MonoBehaviour
         if (IsPlayerTurn && rollsRemaining > 0 && diceManager.TryRollDice())
         {
             rollsRemaining--;
+            uiManager.UpdateRollsUI(rollsRemaining);
         }
     }
 
@@ -108,10 +113,10 @@ public class TurnManager : MonoBehaviour
         if (enemy != null && enemy.isActiveAndEnabled && enemy.IsAlive)
             combatManager.EnemyAttack(enemy);
 
-        EndTurn();
+        // Turn ends via animation events
     }
 
-    private void EndTurn()
+    public void EndTurn()
     {
         if (turnQueue.First == null)
             return;

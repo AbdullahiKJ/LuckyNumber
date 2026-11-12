@@ -1,13 +1,15 @@
-using System;
 using System.Collections.Generic;
+using FGUIStarter;
 using TMPro;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     // References
-    private CombatManager combatManager;
+    [SerializeField] private DiceManager diceManager;
+    [SerializeField] private CombatManager combatManager;
     private Camera cam;
 
     [Header("Health UI")]
@@ -22,9 +24,19 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform turnBackground;
     private readonly List<GameObject> turnRows = new();
 
+    [Header("Roll UI")]
+    [SerializeField] private TextMeshProUGUI rollText;
+    [SerializeField] private CustomButton rollButton;
+    private float rollsRemaining;
+
     private void Awake()
     {
-        combatManager = GetComponent<CombatManager>();
+        if (combatManager == null)
+            combatManager = GetComponent<CombatManager>();
+
+        if (diceManager == null)
+            diceManager = GetComponent<DiceManager>();
+
         cam = Camera.main;
 
         foreach (Enemy enemy in combatManager.Enemies)
@@ -40,15 +52,40 @@ public class UIManager : MonoBehaviour
     private void OnEnable()
     {
         combatManager.Player.HealthChanged += UpdatePlayerHealthUI;
+        diceManager.RollStarted += DisableRollButton;
+        diceManager.RollFinished += EnableRollButton;
     }
 
     private void OnDisable()
     {
         combatManager.Player.HealthChanged -= UpdatePlayerHealthUI;
+        diceManager.RollStarted -= DisableRollButton;
+        diceManager.RollFinished -= EnableRollButton;
     }
 
-    public void UpdateDiceUI()
-    { }
+    public void UpdateRollsUI(int rolls)
+    {
+        rollsRemaining = rolls;
+        if (rollText != null)
+            rollText.text = $"{rolls}";
+    }
+
+    private void DisableRollButton()
+    {
+        if (rollButton != null)
+        {
+            rollButton.interactable = false;
+        }
+    }
+
+    public void EnableRollButton()
+    {
+        if (rollButton != null)
+        {
+            rollButton.interactable = rollsRemaining > 0 && !diceManager.IsRolling;
+        }
+    }
+
 
     public void UpdateBoardUI()
     { }

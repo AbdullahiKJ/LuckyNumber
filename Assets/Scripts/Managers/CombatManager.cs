@@ -15,6 +15,10 @@ public class CombatManager : MonoBehaviour
     {
         if (turnManager == null)
             turnManager = GetComponent<TurnManager>();
+
+        // Assign the turn manager to each enemy script
+        foreach (Enemy enemy in enemies)
+            enemy.Turn = turnManager;
     }
 
     public void PlayerAttack(int value, Enemy enemy)
@@ -28,13 +32,13 @@ public class CombatManager : MonoBehaviour
 
         // todo: resolve any card effects
 
-        // End the turn
-        turnManager.EndPlayerTurn();
+        // End the turn via animation events
     }
 
     public void EnemyAttack(Enemy enemy)
     {
-        enemy.Attack(player);
+        if (player != null && player.IsAlive)
+            enemy.StartAttackAnimation(player);
     }
 
     public bool CheckCombatEnd()

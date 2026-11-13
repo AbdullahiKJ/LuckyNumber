@@ -15,4 +15,4 @@ MonoBehaviour:
   trigger: 0
   unlimitedUses: 0
   charges: 1
-  status: {fileID: 11400000, guid: b6256b6751dbc47f68758e46e67d5bad, type: 2}
+  status: {fileID: 11400000, guid: cccbff63519864b9ea8de26affbcf1b4, type: 2}

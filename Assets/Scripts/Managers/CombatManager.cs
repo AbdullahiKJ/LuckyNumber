@@ -35,6 +35,8 @@ public class CombatManager : MonoBehaviour
 
         // todo: resolve any card effects
 
+        playerAttackInProgress = true;
+
         // End the turn
         Invoke("OnPlayerAttackFinished", playerTurnDelay);
     }

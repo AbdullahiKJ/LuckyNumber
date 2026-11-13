@@ -34,6 +34,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button ownedCardsButton;
     [SerializeField] private Button shopCardsButton;
     [SerializeField] private GameObject cardPrefab;
+    [SerializeField] private Transform ownedCardsGroup;
     [SerializeField] private Transform shopCardsGroup;
     [SerializeField] private CardDetailsPanel cardDetailsPanel;
 
@@ -55,9 +56,7 @@ public class UIManager : MonoBehaviour
         }
 
         // Disable cards and the card button on start
-        ownedCards.SetActive(false);
-        shopCards.SetActive(false);
-        cardButton.SetActive(false);
+        CloseCards();
 
         // Create the shop card ui
         cardDetailsPanel.Game = gameManager;
@@ -117,8 +116,9 @@ public class UIManager : MonoBehaviour
         shopCardsButton.interactable = true;
     }
 
-    public void CloseShop()
+    public void CloseCards()
     {
+        ownedCards.SetActive(false);
         shopCards.SetActive(false);
         cardButton.SetActive(false);
     }
@@ -137,15 +137,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void UpdateOwnedCards()
+    public void AddOwnedCard(CardDefinition card)
     {
-        // todo: add new cards to the owned cards group
-        // Re-instantiate the children
-        // foreach (CardDefinition definition in gameManager.Cards.ShopCards)
-        // {
-        //     CardView view = Instantiate(cardPrefab, shopCardsGroup).GetComponent<CardView>();
-        //     view.Bind(definition, cardDetailsPanel.Show);
-        // }
+        CardView view = Instantiate(cardPrefab, ownedCardsGroup).GetComponent<CardView>();
+        view.Bind(card, cardDetailsPanel.Show);
+        CloseCards();
     }
 
     public void UpdateBoardUI()

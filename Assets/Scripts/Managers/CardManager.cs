@@ -70,7 +70,7 @@ public class CardManager : MonoBehaviour
 
                 // Update and close the shop ui
                 gameManager.UI.UpdateShopCards();
-                gameManager.UI.CloseShop();
+                gameManager.UI.CloseCards();
             }
             // Otherwise, add them to the list of effects
             else
@@ -80,8 +80,12 @@ public class CardManager : MonoBehaviour
             }
         }
 
+        // Add persistent cards to the owned list and update the ui
         if (hasOngoingEffects)
+        {
             ownedCards.Add(card);
+            gameManager.UI.AddOwnedCard(card);
+        }
 
         CardsChanged?.Invoke();
         return true;

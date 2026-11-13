@@ -5,6 +5,10 @@ public class Player : MonoBehaviour
 {
     // Health
     [SerializeField] private float maxHealth = 100f;
+
+    [SerializeField] private bool debug = false;
+    [SerializeField] private float debugHealth = 0f;
+
     private float currentHealth;
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
@@ -19,6 +23,11 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        if (debug)
+        {
+            currentHealth = debugHealth;
+            return;
+        }
         currentHealth = maxHealth;
     }
 

@@ -51,8 +51,8 @@ public class StatusController : MonoBehaviour
             if (!owner.IsAlive)
                 break;
 
-            // Another status may have removed this one.
-            if (!statuses.Contains(status))
+            // Another status may have removed this one or a status may skip attakcs
+            if (!statuses.Contains(status) || status.Definition.SkipsAttack)
                 continue;
 
             status.RemainingTurns--;
@@ -61,6 +61,31 @@ public class StatusController : MonoBehaviour
 
         statuses.RemoveAll(status => status.RemainingTurns <= 0);
         StatusesChanged?.Invoke();
+    }
+
+    public bool TryConsumeAttackSkip()
+    {
+        if (!owner.IsAlive)
+            return false;
+
+        bool skipped = false;
+
+        foreach (ActiveStatus status in statuses)
+        {
+            if (!status.Definition.SkipsAttack || status.RemainingTurns <= 0)
+                continue;
+
+            status.RemainingTurns--;
+            skipped = true;
+        }
+
+        if (skipped)
+        {
+            statuses.RemoveAll(status => status.RemainingTurns <= 0);
+            StatusesChanged?.Invoke();
+        }
+
+        return skipped;
     }
 
     public void Clear()

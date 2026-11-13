@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardSO
   cardName: Hypnosis
   image: {fileID: 21300000, guid: e0e97950dc41b41b79800aec3dfbc3c8, type: 3}
-  summary: Skip 1 enemy turn
+  summary: Apply Sleep for 3 turns
   cost: 
-  details: Put an enemy to sleep, skipping their turn this round. This card is consumed
-    upon use
-  effects: []
+  details: Put an enemy to sleep for 3 turns, skipping their attack each turn
+  effects:
+  - {fileID: 11400000, guid: 5584aef6d35114615aa624b4e08fc7e4, type: 2}

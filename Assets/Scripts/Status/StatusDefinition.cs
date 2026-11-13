@@ -7,5 +7,7 @@ public abstract class StatusDefinition : ScriptableObject
 
     public int Duration => duration;
 
+    public virtual bool SkipsAttack => false;
+
     public abstract void OnTurnStarted(Enemy target);
 }

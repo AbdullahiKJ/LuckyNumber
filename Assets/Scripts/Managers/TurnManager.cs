@@ -155,6 +155,14 @@ public class TurnManager : MonoBehaviour
             yield break;
         }
 
+        StatusController statuses = enemy.GetComponent<StatusController>();
+
+        if (statuses.TryConsumeAttackSkip())
+        {
+            EndTurn();
+            yield break;
+        }
+
         gameManager.Combat.EnemyAttack(enemy);
     }
 

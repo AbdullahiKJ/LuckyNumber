@@ -1,15 +1,13 @@
 using System.Collections.Generic;
 using FGUIStarter;
 using TMPro;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     // References
-    [SerializeField] private DiceManager diceManager;
-    [SerializeField] private CombatManager combatManager;
+    [SerializeField] private GameManager gameManager;
     private Camera cam;
 
     [Header("Health UI")]
@@ -29,17 +27,25 @@ public class UIManager : MonoBehaviour
     [SerializeField] private CustomButton rollButton;
     private float rollsRemaining;
 
+    [Header("Cards UI")]
+    [SerializeField] private GameObject ownedCards;
+    [SerializeField] private GameObject shopCards;
+    [SerializeField] private GameObject cardButton;
+    [SerializeField] private Button ownedCardsButton;
+    [SerializeField] private Button shopCardsButton;
+    [SerializeField] private GameObject cardPrefab;
+    [SerializeField] private Transform shopCardsGroup;
+    [SerializeField] private CardDetailsPanel cardDetailsPanel;
+
+
     private void Awake()
     {
-        if (combatManager == null)
-            combatManager = GetComponent<CombatManager>();
-
-        if (diceManager == null)
-            diceManager = GetComponent<DiceManager>();
+        if (gameManager == null)
+            gameManager = GetComponent<GameManager>();
 
         cam = Camera.main;
 
-        foreach (Enemy enemy in combatManager.Enemies)
+        foreach (Enemy enemy in gameManager.Combat.Enemies)
         {
             if (enemy == null)
                 continue;
@@ -47,20 +53,33 @@ public class UIManager : MonoBehaviour
             EnemyHealthBar bar = Instantiate(enemyHealthBarPrefab, enemyHealthBarLayer);
             bar.Bind(enemy, cam, enemyHealthBarLayer);
         }
+
+        // Disable cards and the card button on start
+        ownedCards.SetActive(false);
+        shopCards.SetActive(false);
+        cardButton.SetActive(false);
+
+        // Create the shop card ui
+        cardDetailsPanel.Game = gameManager;
+        UpdateShopCards();
     }
 
     private void OnEnable()
     {
-        combatManager.Player.HealthChanged += UpdatePlayerHealthUI;
-        diceManager.RollStarted += DisableRollButton;
-        diceManager.RollFinished += EnableRollButton;
+        gameManager.Combat.Player.HealthChanged += UpdatePlayerHealthUI;
+        gameManager.Dice.RollStarted += DisableRollButton;
+        gameManager.Dice.RollFinished += EnableRollButton;
+        gameManager.Turns.PlayerTurnStarted += EnableCardButtons;
+        gameManager.Turns.PlayerTurnEnded += DisableCardButtons;
     }
 
     private void OnDisable()
     {
-        combatManager.Player.HealthChanged -= UpdatePlayerHealthUI;
-        diceManager.RollStarted -= DisableRollButton;
-        diceManager.RollFinished -= EnableRollButton;
+        gameManager.Combat.Player.HealthChanged -= UpdatePlayerHealthUI;
+        gameManager.Dice.RollStarted -= DisableRollButton;
+        gameManager.Dice.RollFinished -= EnableRollButton;
+        gameManager.Turns.PlayerTurnStarted -= EnableCardButtons;
+        gameManager.Turns.PlayerTurnEnded -= DisableCardButtons;
     }
 
     public void UpdateRollsUI(int rolls)
@@ -82,10 +101,52 @@ public class UIManager : MonoBehaviour
     {
         if (rollButton != null)
         {
-            rollButton.interactable = rollsRemaining > 0 && !diceManager.IsRolling;
+            rollButton.interactable = rollsRemaining > 0 && !gameManager.Dice.IsRolling;
         }
     }
 
+    private void DisableCardButtons()
+    {
+        ownedCardsButton.interactable = false;
+        shopCardsButton.interactable = false;
+    }
+
+    private void EnableCardButtons()
+    {
+        ownedCardsButton.interactable = true;
+        shopCardsButton.interactable = true;
+    }
+
+    public void CloseShop()
+    {
+        shopCards.SetActive(false);
+        cardButton.SetActive(false);
+    }
+
+    public void UpdateShopCards()
+    {
+        // Destroy all children of the shop cards group
+        foreach (Transform child in shopCardsGroup.transform)
+            Destroy(child.gameObject);
+
+        // Re-instantiate the children
+        foreach (CardDefinition definition in gameManager.Cards.ShopCards)
+        {
+            CardView view = Instantiate(cardPrefab, shopCardsGroup).GetComponent<CardView>();
+            view.Bind(definition, cardDetailsPanel.Show);
+        }
+    }
+
+    public void UpdateOwnedCards()
+    {
+        // todo: add new cards to the owned cards group
+        // Re-instantiate the children
+        // foreach (CardDefinition definition in gameManager.Cards.ShopCards)
+        // {
+        //     CardView view = Instantiate(cardPrefab, shopCardsGroup).GetComponent<CardView>();
+        //     view.Bind(definition, cardDetailsPanel.Show);
+        // }
+    }
 
     public void UpdateBoardUI()
     { }

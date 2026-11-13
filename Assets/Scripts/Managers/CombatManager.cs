@@ -6,24 +6,27 @@ public class CombatManager : MonoBehaviour
     // private void [] cards
     [SerializeField] private Player player;
     [SerializeField] private Enemy[] enemies;
-    [SerializeField] TurnManager turnManager;
+    [SerializeField] GameManager gameManager;
+    [SerializeField] float playerTurnDelay = 2f;
 
     public Player Player => player;
     public IReadOnlyList<Enemy> Enemies => enemies;
 
+    private bool playerAttackInProgress;
+
     private void Awake()
     {
-        if (turnManager == null)
-            turnManager = GetComponent<TurnManager>();
+        if (gameManager == null)
+            gameManager = GetComponent<GameManager>();
 
         // Assign the turn manager to each enemy script
         foreach (Enemy enemy in enemies)
-            enemy.Turn = turnManager;
+            enemy.Turn = gameManager.Turns;
     }
 
     public void PlayerAttack(int value, Enemy enemy)
     {
-        if (!turnManager.IsPlayerTurn || !player.IsAlive ||
+        if (!gameManager.Turns.IsPlayerTurn || !player.IsAlive ||
            enemy == null || !enemy.isActiveAndEnabled || !enemy.IsAlive)
             return;
 
@@ -32,7 +35,17 @@ public class CombatManager : MonoBehaviour
 
         // todo: resolve any card effects
 
-        // End the turn via animation events
+        // End the turn
+        Invoke("OnPlayerAttackFinished", playerTurnDelay);
+    }
+
+    public void OnPlayerAttackFinished()
+    {
+        if (!playerAttackInProgress)
+            return;
+
+        playerAttackInProgress = false;
+        gameManager.Turns.EndPlayerTurn();
     }
 
     public void EnemyAttack(Enemy enemy)

@@ -68,9 +68,4 @@ public class Enemy : MonoBehaviour
     {
         Turn.Invoke("EndTurn", Turn.TurnDelay);
     }
-
-    public void EndPlayerTurn()
-    {
-        Turn.Invoke("EndPlayerTurn", Turn.TurnDelay);
-    }
 }

@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float maxHealth = 100f;
     private float currentHealth;
     public float CurrentHealth => currentHealth;
+    public float MaxHealth => maxHealth;
     public bool IsAlive => currentHealth > 0f;
     public event Action<float, float> HealthChanged;
     public event Action Died;

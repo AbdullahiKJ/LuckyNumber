@@ -5,9 +5,13 @@ using UnityEngine;
 public class DiceManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> allDice;
+    // Die that are in the process of being rolled
     private readonly HashSet<Dice> pendingDice = new();
+    // Die whose rolls have ended
     private readonly HashSet<Dice> rolledDice = new();
+    // Die that have been selected
     private readonly HashSet<Dice> selectedDice = new();
+    public HashSet<Dice> RolledDice => rolledDice;
 
     public bool IsRolling => pendingDice.Count > 0;
     public event Action RollStarted;
@@ -16,7 +20,6 @@ public class DiceManager : MonoBehaviour
     private void OnEnable()
     {
         GameManager gameManager = GetComponent<GameManager>();
-        TurnManager turnManager = GetComponent<TurnManager>();
 
         foreach (GameObject dieObject in allDice)
         {
@@ -25,7 +28,7 @@ public class DiceManager : MonoBehaviour
                 die.RollCompleted += OnDieRollCompleted;
                 die.DiceManager = this;
                 die.GameManager = gameManager;
-                die.TurnManager = turnManager;
+                die.TurnManager = gameManager.Turns;
             }
         }
     }

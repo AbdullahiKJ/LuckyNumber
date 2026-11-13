@@ -1,13 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
     // References
-    private UIManager uiManager;
-    private CombatManager combatManager;
-    private DiceManager diceManager;
-    private GameManager gameManager;
+    [SerializeField] private GameManager gameManager;
 
     // Roll and turn management
     private int rollsRemaining;
@@ -23,12 +21,13 @@ public class TurnManager : MonoBehaviour
         EnemyTurn
     }
 
+    public event Action PlayerTurnStarted;
+    public event Action PlayerTurnEnded;
+
     private void Awake()
     {
-        uiManager = GetComponent<UIManager>();
-        combatManager = GetComponent<CombatManager>();
-        diceManager = GetComponent<DiceManager>();
-        gameManager = GetComponent<GameManager>();
+        if (gameManager == null)
+            gameManager = GetComponent<GameManager>();
 
         rollsRemaining = maxRolls;
 
@@ -41,7 +40,7 @@ public class TurnManager : MonoBehaviour
         turnQueue.Clear();
         turnQueue.AddLast((TurnState.PlayerTurn, null));
 
-        foreach (Enemy enemy in combatManager.Enemies)
+        foreach (Enemy enemy in gameManager.Combat.Enemies)
         {
             // todo: put this back later
             // if (enemy.isActiveAndEnabled)
@@ -76,25 +75,36 @@ public class TurnManager : MonoBehaviour
 
     public void StartPlayerTurn()
     {
+        PlayerTurnStarted?.Invoke();
+
+        // Update remaining rolls and ui
         rollsRemaining = maxRolls;
-        uiManager.UpdateRollsUI(rollsRemaining);
-        uiManager.EnableRollButton();
-        diceManager.ResetForPlayerTurn();
+        gameManager.UI.UpdateRollsUI(rollsRemaining);
+        gameManager.UI.EnableRollButton();
+
+        // Reset held die
+        gameManager.Dice.ResetForPlayerTurn();
+
+        // Resolve active card effects
+        gameManager.Cards.ResolveEffects(EffectTrigger.PlayerTurnStarted, new EffectContext(gameManager.Combat.Player));
     }
 
     public void UseRoll()
     {
-        if (IsPlayerTurn && rollsRemaining > 0 && diceManager.TryRollDice())
+        if (IsPlayerTurn && rollsRemaining > 0 && gameManager.Dice.TryRollDice())
         {
             rollsRemaining--;
-            uiManager.UpdateRollsUI(rollsRemaining);
+            gameManager.UI.UpdateRollsUI(rollsRemaining);
         }
     }
 
     public void EndPlayerTurn()
     {
         if (IsPlayerTurn)
+        {
+            PlayerTurnEnded?.Invoke();
             EndTurn();
+        }
     }
 
     public void GrantExtraPlayerTurn()
@@ -111,7 +121,7 @@ public class TurnManager : MonoBehaviour
     {
         Enemy enemy = turnQueue.First.Value.enemy;
         if (enemy != null && enemy.isActiveAndEnabled && enemy.IsAlive)
-            combatManager.EnemyAttack(enemy);
+            gameManager.Combat.EnemyAttack(enemy);
 
         // Turn ends via animation events
     }
@@ -124,7 +134,7 @@ public class TurnManager : MonoBehaviour
         turnQueue.RemoveFirst();
 
         // If combat ended, clear the list, refresh the UI, and return.
-        if (combatManager.CheckCombatEnd())
+        if (gameManager.Combat.CheckCombatEnd())
         {
             turnQueue.Clear();
             RefreshTurnUI();
@@ -150,6 +160,6 @@ public class TurnManager : MonoBehaviour
             rows.Add((isPlayer, label));
         }
 
-        uiManager.UpdateTurnUI(rows);
+        gameManager.UI.UpdateTurnUI(rows);
     }
 }

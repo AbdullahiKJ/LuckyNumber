@@ -3,7 +3,16 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     // References
-    private CombatManager combatManager;
+    [SerializeField] private CardManager cards;
+    [SerializeField] private CombatManager combat;
+    [SerializeField] private DiceManager dice;
+    [SerializeField] private TurnManager turns;
+    [SerializeField] private UIManager ui;
+    public CardManager Cards => cards;
+    public CombatManager Combat => combat;
+    public DiceManager Dice => dice;
+    public TurnManager Turns => turns;
+    public UIManager UI => ui;
 
     private int currentLevel;
     [SerializeField] int maxLevel;
@@ -17,17 +26,31 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        combatManager = GetComponent<CombatManager>();
+        if (cards == null)
+            cards = GetComponent<CardManager>();
+
+        if (combat == null)
+            combat = GetComponent<CombatManager>();
+
+        if (dice == null)
+            dice = GetComponent<DiceManager>();
+
+        if (turns == null)
+            turns = GetComponent<TurnManager>();
+
+        if (ui == null)
+            ui = GetComponent<UIManager>();
+
         gameState = GameState.Active;
     }
     private void OnEnable()
     {
-        combatManager.Player.Died += GameOver;
+        combat.Player.Died += GameOver;
     }
 
     private void OnDisable()
     {
-        combatManager.Player.Died -= GameOver;
+        combat.Player.Died -= GameOver;
     }
 
     private void StartGame()

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f10b44dc49eb441aaecc05740b12729, type: 3}
-  m_Name: Attack_Mult_1.5
-  m_EditorClassIdentifier: Assembly-CSharp::StatusModifierEffect
-  trigger: 0
+  m_Script: {fileID: 11500000, guid: 68102a53ec73f439781b981897b0fac3, type: 3}
+  m_Name: Block_1
+  m_EditorClassIdentifier: Assembly-CSharp::BlockEffect
+  trigger: 4

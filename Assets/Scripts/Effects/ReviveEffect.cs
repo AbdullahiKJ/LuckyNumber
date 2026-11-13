@@ -3,9 +3,22 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Cards/Effects/Revive Player")]
 public class ReviveEffect : EffectDefinition
 {
-    public override void Resolve(EffectContext context)
+    [SerializeField, Range(0.01f, 1f)]
+    private float healthFraction = 0.5f;
+
+    public override bool Resolve(EffectContext context)
     {
-        if (context.Player != null && context.Player.CurrentHealth == 0)
-            context.Player.Heal(context.Player.MaxHealth * 0.5f);
+        // Damage effects use TryResolveDamage.
+        return false;
+    }
+
+    public override bool TryResolveDamage(DamageContext context)
+    {
+        if (context.Player.IsAlive)
+            return false;
+
+        context.ReviveHealth = context.Player.MaxHealth * healthFraction;
+
+        return true;
     }
 }

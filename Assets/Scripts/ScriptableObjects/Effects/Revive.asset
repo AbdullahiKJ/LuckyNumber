@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66e54397249c84e13bb2ba766d1f761e, type: 3}
   m_Name: Revive
   m_EditorClassIdentifier: Assembly-CSharp::ReviveEffect
-  trigger: 0
+  trigger: 5

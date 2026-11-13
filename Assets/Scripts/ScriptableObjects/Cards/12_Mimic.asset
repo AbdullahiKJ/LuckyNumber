@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardSO
   cardName: Mimic
   image: {fileID: 21300000, guid: 88ec071aca94d4ffebf374071a118bf9, type: 3}
-  summary: Apply damage twice
+  summary: Deal double damage
   cost: 
-  details: Every instance of damage dealt to an enemy is performed twice
-  effects: []
+  details: Deal double damage on your next attack
+  effects:
+  - {fileID: 11400000, guid: da784bad6389342a8847fb72a89f72f9, type: 2}

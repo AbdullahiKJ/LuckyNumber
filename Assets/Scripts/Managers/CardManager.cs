@@ -65,11 +65,11 @@ public class CardManager : MonoBehaviour
             {
                 effect.Resolve(context);
 
-                // Prepare the card from the shop list
-                shopCards.Remove(card);
+                // Do not remove the card from the shop list
+                // shopCards.Remove(card);
 
                 // Update and close the shop ui
-                gameManager.UI.UpdateShopCards();
+                // gameManager.UI.UpdateShopCards();
                 gameManager.UI.CloseCards();
             }
             // Otherwise, add them to the list of effects
@@ -91,15 +91,90 @@ public class CardManager : MonoBehaviour
         return true;
     }
 
-    public void ResolveEffects(
-        EffectTrigger trigger,
-        EffectContext context)
+    private void ConsumeEffectCharge(ActiveCardEffect effect)
     {
-        // Resolve a snapshot so effects added during resolution begin participating on the next dispatch.
+        effect.ConsumeCharge();
+
+        if (!effect.IsExpired)
+            return;
+
+        activeEffects.Remove(effect);
+
+        bool cardStillHasEffects = activeEffects.Exists(
+            other => other.SourceCard == effect.SourceCard);
+
+        if (!cardStillHasEffects)
+            ownedCards.Remove(effect.SourceCard);
+    }
+
+    public void ResolveEffects(
+       EffectTrigger trigger,
+       EffectContext context)
+    {
+        bool anyApplied = false;
+
         foreach (ActiveCardEffect effect in activeEffects.ToArray())
         {
-            if (effect.Definition.Trigger == trigger)
-                effect.Definition.Resolve(context);
+            if (!activeEffects.Contains(effect) || effect.IsExpired ||
+                effect.Definition.Trigger != trigger)
+                continue;
+
+            if (!effect.Definition.Resolve(context))
+                continue;
+
+            ConsumeEffectCharge(effect);
+            anyApplied = true;
         }
+
+        if (anyApplied)
+            CardsChanged?.Invoke();
+    }
+
+    public bool ResolveDamageEffects(
+        EffectTrigger trigger,
+        DamageContext context,
+        bool stopAfterFirst = false)
+    {
+        bool anyApplied = false;
+
+        foreach (ActiveCardEffect effect in activeEffects.ToArray())
+        {
+            // Ignore if the trigger does not match, effect is expired or not in the list
+            if (!activeEffects.Contains(effect) || effect.IsExpired ||
+                effect.Definition.Trigger != trigger)
+                continue;
+
+            // Ignore if the resolve damage fails
+            if (!effect.Definition.TryResolveDamage(context))
+                continue;
+
+            ConsumeEffectCharge(effect);
+            anyApplied = true;
+
+            if (stopAfterFirst)
+                break;
+        }
+
+        if (anyApplied)
+            CardsChanged?.Invoke();
+
+        return anyApplied;
+    }
+
+    public string GetChargeLabel(CardDefinition card)
+    {
+        var labels = new List<string>();
+
+        foreach (ActiveCardEffect effect in activeEffects)
+        {
+            if (effect.SourceCard != card)
+                continue;
+
+            labels.Add(effect.Definition.UnlimitedUses
+                ? "∞"
+                : effect.RemainingCharges.ToString());
+        }
+
+        return string.Join(" / ", labels);
     }
 }

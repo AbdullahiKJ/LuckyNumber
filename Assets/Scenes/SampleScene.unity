@@ -1073,7 +1073,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c53a143356d674204b4cd618806911d3, type: 2}
   - {fileID: 11400000, guid: b8a6de6b6cdd3480c935ea851f2f4e66, type: 2}
   - {fileID: 11400000, guid: a26ea25d93a81455ab3dc7b12e2c7b79, type: 2}
+  - {fileID: 11400000, guid: 0cb7fcb5bf3b34cb08a8e47f99f032c4, type: 2}
+  - {fileID: 11400000, guid: 93ad6ea79309e4c2eb99ccddecdf169f, type: 2}
   - {fileID: 11400000, guid: 5ed7c4857014b422289dbb80cf839342, type: 2}
+  - {fileID: 11400000, guid: 9b36df4f3e4314d5fb8b14e0fd8e2440, type: 2}
+  - {fileID: 11400000, guid: 4d3033eb4fef843eca591411f41f666f, type: 2}
+  - {fileID: 11400000, guid: 9f80eed3cda174d629c1dc87b3f14530, type: 2}
 --- !u!1001 &619685647
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2456,7 +2461,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   Game: {fileID: 0}
   maxHealth: 100
-  debug: 1
+  debug: 0
   debugHealth: 20
 --- !u!114 &1732886001 stripped
 MonoBehaviour:

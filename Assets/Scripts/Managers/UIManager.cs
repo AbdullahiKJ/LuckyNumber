@@ -38,6 +38,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform shopCardsGroup;
     [SerializeField] private CardDetailsPanel cardDetailsPanel;
 
+    private readonly List<CardView> ownedCardViews = new();
 
     private void Awake()
     {
@@ -71,6 +72,7 @@ public class UIManager : MonoBehaviour
         gameManager.Dice.RollFinished += EnableRollButton;
         gameManager.Turns.PlayerTurnStarted += EnableCardButtons;
         gameManager.Turns.PlayerTurnEnded += DisableCardButtons;
+        gameManager.Cards.CardsChanged += RefreshOwnedCardCharges;
     }
 
     private void OnDisable()
@@ -80,6 +82,7 @@ public class UIManager : MonoBehaviour
         gameManager.Dice.RollFinished -= EnableRollButton;
         gameManager.Turns.PlayerTurnStarted -= EnableCardButtons;
         gameManager.Turns.PlayerTurnEnded -= DisableCardButtons;
+        gameManager.Cards.CardsChanged -= RefreshOwnedCardCharges;
     }
 
     public void UpdateRollsUI(int rolls)
@@ -142,7 +145,30 @@ public class UIManager : MonoBehaviour
     {
         CardView view = Instantiate(cardPrefab, ownedCardsGroup).GetComponent<CardView>();
         view.Bind(card, cardDetailsPanel.Show);
+        view.SetChargeLabel(gameManager.Cards.GetChargeLabel(card));
+
+        ownedCardViews.Add(view);
         CloseCards();
+    }
+
+    private void RefreshOwnedCardCharges()
+    {
+        for (int i = ownedCardViews.Count - 1; i >= 0; i--)
+        {
+            CardView view = ownedCardViews[i];
+            string label = gameManager.Cards.GetChargeLabel(view.Definition);
+
+            if (string.IsNullOrEmpty(label))
+            {
+                ownedCardViews.RemoveAt(i);
+                view.gameObject.SetActive(false);
+                Destroy(view.gameObject);
+            }
+            else
+            {
+                view.SetChargeLabel(label);
+            }
+        }
     }
 
     public void UpdateBoardUI()

@@ -19,9 +19,11 @@ public class CombatManager : MonoBehaviour
         if (gameManager == null)
             gameManager = GetComponent<GameManager>();
 
-        // Assign the game manager to each enemy script
+        // Assign the game manager to each enemy script and player script
         foreach (Enemy enemy in enemies)
             enemy.Game = gameManager;
+
+        player.Game = gameManager;
     }
 
     public void PlayerAttack(int value, Enemy enemy)

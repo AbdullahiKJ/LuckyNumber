@@ -10,6 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f10b44dc49eb441aaecc05740b12729, type: 3}
-  m_Name: Defense_Mult_1.5
+  m_Name: Double_Next_Attack
   m_EditorClassIdentifier: Assembly-CSharp::StatusModifierEffect
-  trigger: 0
+  trigger: 4
+  unlimitedUses: 0
+  charges: 1
+  multiplier: 2

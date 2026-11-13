@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -42,7 +41,17 @@ public class Player : MonoBehaviour
 
     public void Attack(Enemy enemy, int value)
     {
-        enemy.TakeDamage(value * attackMultiplier);
+        if (!IsAlive || enemy == null ||
+            !enemy.isActiveAndEnabled || !enemy.IsAlive || value <= 0)
+            return;
+
+        var context = new DamageContext(this, value * attackMultiplier);
+
+        Game.Cards.ResolveDamageEffects(
+            EffectTrigger.BeforeAttackDamage,
+            context);
+
+        enemy.TakeDamage(context.Amount);
     }
 
     public void Heal(float amount)
@@ -56,21 +65,41 @@ public class Player : MonoBehaviour
         if (!IsAlive || damage <= 0f)
             return;
 
-        // todo: Resolve attack block cards and consume charges
-        // if(Game.Cards.OwnedCards.Contains())
-        // return;
+        var context = new DamageContext(
+            this,
+            Mathf.Max(0f, damage * defenseMultiplier));
 
-        currentHealth = Mathf.Max(0f, currentHealth - (damage * defenseMultiplier));
+        // Resolve any damage nullification effects
+        Game.Cards.ResolveDamageEffects(
+            EffectTrigger.BeforeIncomingDamage,
+            context);
+
+        // Resolve blocks.
+        Game.Cards.ResolveDamageEffects(
+            EffectTrigger.BeforeDamageApplied,
+            context,
+            stopAfterFirst: true);
+
+        if (context.Amount <= 0f)
+            return;
+
+        currentHealth = Mathf.Max(0f, currentHealth - context.Amount);
+
+        // Resolve any resurrection effects
+        if (!IsAlive)
+        {
+            Game.Cards.ResolveDamageEffects(
+            EffectTrigger.OnLethalDamage,
+            context,
+            stopAfterFirst: true);
+
+            currentHealth = Mathf.Clamp(context.ReviveHealth, 0f, maxHealth);
+        }
+
         HealthChanged?.Invoke(currentHealth, maxHealth);
 
         if (!IsAlive)
-        {
-            // todo: Resolve ressurection cards
-            // if(Game.Cards.OwnedCards.Contains())
-            // HealthChanged?.Invoke(currentHealth, maxHealth);
-            // return;
             Die();
-        }
     }
 
     private void Die()

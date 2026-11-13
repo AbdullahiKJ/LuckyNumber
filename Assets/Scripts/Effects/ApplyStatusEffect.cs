@@ -5,10 +5,10 @@ public class ApplyStatusEffect : EffectDefinition
 {
     [SerializeField] private StatusDefinition status;
 
-    public override void Resolve(EffectContext context)
+    public override bool Resolve(EffectContext context)
     {
         if (context.Targets == null)
-            return;
+            return false;
 
         foreach (Enemy target in context.Targets)
         {
@@ -18,5 +18,6 @@ public class ApplyStatusEffect : EffectDefinition
                 controller.Apply(status);
             }
         }
+        return true;
     }
 }

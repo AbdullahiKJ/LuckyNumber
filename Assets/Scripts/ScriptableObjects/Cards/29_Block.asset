@@ -17,3 +17,5 @@ MonoBehaviour:
   summary: Block the next incoming damage
   cost: 
   details: Completely negate the next instance of damage received
+  effects:
+  - {fileID: 11400000, guid: 3a11f16d37d2a4771acc48ea961874bf, type: 2}

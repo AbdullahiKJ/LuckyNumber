@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6af5770f186a545d5baadec850c8b4e4, type: 3}
   m_Name: 1_Fireball
   m_EditorClassIdentifier: Assembly-CSharp::CardSO
-  cardName: FIreball
+  cardName: Fireball
   image: {fileID: 21300000, guid: 61f4737db6bd3444b8a7aaf6f7880623, type: 3}
   summary: Apply Burn for 3 turns
   cost: 

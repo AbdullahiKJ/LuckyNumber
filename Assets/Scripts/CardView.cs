@@ -7,6 +7,10 @@ public class CardView : MonoBehaviour
 {
     [SerializeField] private Image artwork;
     [SerializeField] private TextMeshProUGUI summaryText;
+    [SerializeField] private GameObject chargeBadge;
+    [SerializeField] private TextMeshProUGUI chargeText;
+
+    public CardDefinition Definition => definition;
 
     private CardDefinition definition;
     private Action<CardDefinition> onSelected;
@@ -20,6 +24,14 @@ public class CardView : MonoBehaviour
 
         artwork.sprite = card.image;
         summaryText.text = card.summary;
+
+        SetChargeLabel(string.Empty);
+    }
+
+    public void SetChargeLabel(string label)
+    {
+        chargeBadge.SetActive(!string.IsNullOrEmpty(label));
+        chargeText.text = label;
     }
 
     public void OnClick()

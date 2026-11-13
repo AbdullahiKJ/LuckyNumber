@@ -17,3 +17,16 @@ public class EffectContext
         DamageDealt = damageDealt;
     }
 }
+
+public class DamageContext
+{
+    public Player Player { get; }
+    public float Amount { get; set; }
+    public float ReviveHealth { get; set; }
+
+    public DamageContext(Player player, float amount)
+    {
+        Player = player;
+        Amount = amount;
+    }
+}

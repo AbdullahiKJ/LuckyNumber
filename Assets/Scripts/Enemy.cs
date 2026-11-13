@@ -5,7 +5,7 @@ public class Enemy : MonoBehaviour
 {
     // Referencees
     [SerializeField] AnimationController animation;
-    public TurnManager Turn;
+    public GameManager Game;
 
     // Health
     [SerializeField] private float maxHealth = 100f;
@@ -18,6 +18,8 @@ public class Enemy : MonoBehaviour
     // Attack
     [SerializeField] private float attackDamage = 1f;
     Player target;
+
+    public bool IsReactingToHit { get; private set; }
 
     private void Awake()
     {
@@ -48,9 +50,14 @@ public class Enemy : MonoBehaviour
         HealthChanged?.Invoke(currentHealth, maxHealth);
 
         if (!IsAlive)
+        {
+            IsReactingToHit = false;
             Die();
+            return;
+        }
 
         // Play the hit animation
+        IsReactingToHit = true;
         animation.TriggerHit();
     }
 
@@ -66,6 +73,11 @@ public class Enemy : MonoBehaviour
     // Animation events for ending turns after playing attack, hit and die animations
     public void EndTurn()
     {
-        Turn.Invoke("EndTurn", Turn.TurnDelay);
+        Game.Turns.Invoke("EndTurn", Game.Turns.TurnDelay);
+    }
+
+    public void OnHitAnimationFinished()
+    {
+        IsReactingToHit = false;
     }
 }

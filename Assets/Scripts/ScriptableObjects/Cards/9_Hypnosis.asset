@@ -18,3 +18,4 @@ MonoBehaviour:
   cost: 
   details: Put an enemy to sleep, skipping their turn this round. This card is consumed
     upon use
+  effects: []

@@ -1,8 +1,12 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    // References
+    public GameManager Game;
+
     // Health
     [SerializeField] private float maxHealth = 100f;
 
@@ -52,11 +56,21 @@ public class Player : MonoBehaviour
         if (!IsAlive || damage <= 0f)
             return;
 
+        // todo: Resolve attack block cards and consume charges
+        // if(Game.Cards.OwnedCards.Contains())
+        // return;
+
         currentHealth = Mathf.Max(0f, currentHealth - (damage * defenseMultiplier));
         HealthChanged?.Invoke(currentHealth, maxHealth);
 
         if (!IsAlive)
+        {
+            // todo: Resolve ressurection cards
+            // if(Game.Cards.OwnedCards.Contains())
+            // HealthChanged?.Invoke(currentHealth, maxHealth);
+            // return;
             Die();
+        }
     }
 
     private void Die()

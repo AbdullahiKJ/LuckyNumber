@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -86,7 +87,7 @@ public class TurnManager : MonoBehaviour
         gameManager.Dice.ResetForPlayerTurn();
 
         // Resolve active card effects
-        gameManager.Cards.ResolveEffects(EffectTrigger.PlayerTurnStarted, new EffectContext(gameManager.Combat.Player));
+        gameManager.Cards.ResolveEffects(EffectTrigger.TurnStarted, new EffectContext(gameManager.Combat.Player));
     }
 
     public void UseRoll()
@@ -119,11 +120,42 @@ public class TurnManager : MonoBehaviour
 
     private void ExecuteEnemyTurn()
     {
-        Enemy enemy = turnQueue.First.Value.enemy;
-        if (enemy != null && enemy.isActiveAndEnabled && enemy.IsAlive)
-            gameManager.Combat.EnemyAttack(enemy);
+        StartCoroutine(ExecuteEnemyTurnRoutine());
+    }
 
-        // Turn ends via animation events
+    private IEnumerator ExecuteEnemyTurnRoutine()
+    {
+        Enemy enemy = turnQueue.First.Value.enemy;
+
+        // Exit early if the enemy is dead or inactive
+        if (enemy == null || !enemy.isActiveAndEnabled || !enemy.IsAlive)
+        {
+            EndTurn();
+            yield break;
+        }
+
+        // Trigger any status effects
+        enemy.GetComponent<StatusController>().ResolveTurnStart();
+
+        // Wait for the hit animation to end
+        while (enemy != null && enemy.isActiveAndEnabled &&
+                enemy.IsAlive && enemy.IsReactingToHit)
+        {
+            yield return null;
+        }
+
+        // Exit early if the game has ended
+        if (!gameManager.IsGameActive())
+            yield break;
+
+        // Exit early if the enemy is dead or inactive
+        if (enemy == null || !enemy.isActiveAndEnabled || !enemy.IsAlive)
+        {
+            EndTurn();
+            yield break;
+        }
+
+        gameManager.Combat.EnemyAttack(enemy);
     }
 
     public void EndTurn()

@@ -12,7 +12,9 @@ public abstract class EffectDefinition : ScriptableObject
 public enum EffectTrigger
 {
     OnAcquire,
-    PlayerTurnStarted,
-    AfterPlayerAttack,
-    PlayerTurnEnded
+    TurnStarted,
+    TurnEnded,
+    AfterAttack,
+    BeforeDamageApplied,
+    OnLethalDamage
 }

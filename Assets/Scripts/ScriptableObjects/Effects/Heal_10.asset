@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f10b44dc49eb441aaecc05740b12729, type: 3}
-  m_Name: Modify_Player_Effect
-  m_EditorClassIdentifier: Assembly-CSharp::StatusModifierEffect
+  m_Script: {fileID: 11500000, guid: b8a4b976ce5aa4edd91575144c65885e, type: 3}
+  m_Name: Heal_10
+  m_EditorClassIdentifier: Assembly-CSharp::HealEffect
   trigger: 0
+  amount: 10

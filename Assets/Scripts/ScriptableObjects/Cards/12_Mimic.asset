@@ -17,3 +17,4 @@ MonoBehaviour:
   summary: Apply damage twice
   cost: 
   details: Every instance of damage dealt to an enemy is performed twice
+  effects: []

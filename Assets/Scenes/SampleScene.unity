@@ -989,6 +989,7 @@ MonoBehaviour:
   ownedCardsButton: {fileID: 1893061440}
   shopCardsButton: {fileID: 1814620946}
   cardPrefab: {fileID: 1088694411547299865, guid: d81d85b3bbc3f4ba782150b7076e431d, type: 3}
+  ownedCardsGroup: {fileID: 1910408339}
   shopCardsGroup: {fileID: 1962841791}
   cardDetailsPanel: {fileID: 619685649}
 --- !u!114 &574451987
@@ -1069,8 +1070,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardManager
   gameManager: {fileID: 574451988}
   shopCards:
-  - {fileID: 11400000, guid: a26ea25d93a81455ab3dc7b12e2c7b79, type: 2}
+  - {fileID: 11400000, guid: c53a143356d674204b4cd618806911d3, type: 2}
   - {fileID: 11400000, guid: b8a6de6b6cdd3480c935ea851f2f4e66, type: 2}
+  - {fileID: 11400000, guid: a26ea25d93a81455ab3dc7b12e2c7b79, type: 2}
   - {fileID: 11400000, guid: 5ed7c4857014b422289dbb80cf839342, type: 2}
 --- !u!1001 &619685647
 PrefabInstance:
@@ -2452,6 +2454,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8ebf5ad21c5d45fba2736a8a22441d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  Game: {fileID: 0}
   maxHealth: 100
   debug: 1
   debugHealth: 20

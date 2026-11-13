@@ -53,6 +53,7 @@ public class UIManager : MonoBehaviour
 
             EnemyHealthBar bar = Instantiate(enemyHealthBarPrefab, enemyHealthBarLayer);
             bar.Bind(enemy, cam, enemyHealthBarLayer);
+            bar.GetComponent<StatusUI>().Bind(enemy.GetComponent<StatusController>());
         }
 
         // Disable cards and the card button on start

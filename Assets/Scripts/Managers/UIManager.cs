@@ -49,6 +49,10 @@ public class UIManager : MonoBehaviour
 
     private readonly List<EnemyHealthBar> enemyBars = new();
 
+    [Header("Lucky Roll")]
+    [SerializeField] private GameObject luckyRollPanel;
+    [SerializeField] private TextMeshProUGUI luckyRollText;
+
     private void Awake()
     {
         if (gameManager == null)
@@ -69,6 +73,7 @@ public class UIManager : MonoBehaviour
         gameManager.Combat.Player.HealthChanged += UpdatePlayerHealthUI;
         gameManager.Dice.RollStarted += DisableRollButton;
         gameManager.Dice.RollFinished += EnableRollButton;
+        gameManager.Dice.LuckyRoll += ShowLuckyRoll;
         gameManager.Turns.PlayerTurnStarted += EnableCardButtons;
         gameManager.Turns.PlayerTurnEnded += DisableCardButtons;
         gameManager.Cards.CardsChanged += RefreshOwnedCardCharges;
@@ -79,9 +84,13 @@ public class UIManager : MonoBehaviour
         gameManager.Combat.Player.HealthChanged -= UpdatePlayerHealthUI;
         gameManager.Dice.RollStarted -= DisableRollButton;
         gameManager.Dice.RollFinished -= EnableRollButton;
+        gameManager.Dice.LuckyRoll -= ShowLuckyRoll;
         gameManager.Turns.PlayerTurnStarted -= EnableCardButtons;
         gameManager.Turns.PlayerTurnEnded -= DisableCardButtons;
         gameManager.Cards.CardsChanged -= RefreshOwnedCardCharges;
+
+        CancelInvoke(nameof(HideLuckyRoll));
+        HideLuckyRoll();
     }
 
     public void UpdateRollsUI(int rolls)
@@ -169,9 +178,22 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void UpdateBoardUI()
-    { }
+    private void ShowLuckyRoll(float healed)
+    {
+        CancelInvoke(nameof(HideLuckyRoll));
 
+        luckyRollText.text = healed > 0f
+            ? $"Lucky roll! +{healed:0.#} HP"
+            : "Lucky roll! Health already full";
+
+        luckyRollPanel.SetActive(true);
+        Invoke(nameof(HideLuckyRoll), 2f);
+    }
+
+    private void HideLuckyRoll()
+    {
+        luckyRollPanel.SetActive(false);
+    }
     private void UpdatePlayerHealthUI(float current, float max)
     {
         SetHealthUI(playerHealthSlider, playerHealthText, current, max);

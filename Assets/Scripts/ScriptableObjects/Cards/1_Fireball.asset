@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Fireball
   image: {fileID: 21300000, guid: 61f4737db6bd3444b8a7aaf6f7880623, type: 3}
   summary: Apply Burn for 3 turns
-  cost: 
+  cost: 0500000005000000
   details: Apply Burn to all enemies for 3 turns
   effects:
   - {fileID: 11400000, guid: 5f2af4b174b404b97972b1bff9411a6f, type: 2}

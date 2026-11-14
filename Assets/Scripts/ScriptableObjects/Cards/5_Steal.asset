@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Steal
   image: {fileID: 21300000, guid: 09835755b7d454fdf9ae64fc9b6ecb1d, type: 3}
   summary: Steal 10 enemy health
-  cost: 
+  cost: 0200000005000000
   details: Deal 10 damage to an enemy and restore 10 health. This card is consumed
     upon use
   effects:

@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Mimic
   image: {fileID: 21300000, guid: 88ec071aca94d4ffebf374071a118bf9, type: 3}
   summary: Deal double damage
-  cost: 
+  cost: 0100000006000000
   details: Deal double damage on your next attack
   effects:
   - {fileID: 11400000, guid: da784bad6389342a8847fb72a89f72f9, type: 2}

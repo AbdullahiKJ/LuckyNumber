@@ -5,6 +5,9 @@ using UnityEngine;
 public class DiceManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> allDice;
+    [SerializeField, Min(0f)] private float luckyHealAmount = 10f;
+    [SerializeField] private GameManager gameManager;
+
     // Die that are in the process of being rolled
     private readonly HashSet<Dice> pendingDice = new();
     // Die whose rolls have ended
@@ -18,11 +21,10 @@ public class DiceManager : MonoBehaviour
     public event Action RollFinished;
 
     private int luckyNumber;
+    public event Action<float> LuckyRoll;
 
     private void OnEnable()
     {
-        GameManager gameManager = GetComponent<GameManager>();
-
         foreach (GameObject dieObject in allDice)
         {
             if (dieObject != null && dieObject.TryGetComponent(out Dice die))
@@ -37,7 +39,7 @@ public class DiceManager : MonoBehaviour
         // get the lucky number
         luckyNumber = GameSession.Instance != null
            ? GameSession.Instance.LuckyNumber
-           : 1;
+           : 2;
     }
 
     private void OnDisable()
@@ -94,9 +96,31 @@ public class DiceManager : MonoBehaviour
 
         rolledDice.Add(die);
 
-        // Invoke the roll finished event once all die have been rolled
-        if (!IsRolling)
-            RollFinished?.Invoke();
+        if (IsRolling)
+            return;
+
+        CheckLuckyRoll();
+        RollFinished?.Invoke();
+    }
+
+    private void CheckLuckyRoll()
+    {
+        if (!gameManager.IsGameActive() ||
+            !gameManager.Turns.IsPlayerTurn ||
+            GetFullRollTotal() != luckyNumber)
+            return;
+
+        Player player = gameManager.Combat.Player;
+
+        if (!player.IsAlive)
+            return;
+
+        float previousHealth = player.CurrentHealth;
+
+        player.Heal(luckyHealAmount);
+
+        float healed = player.CurrentHealth - previousHealth;
+        LuckyRoll?.Invoke(healed);
     }
 
     public bool CanHold(Dice die) => !IsRolling && die != null && rolledDice.Contains(die);

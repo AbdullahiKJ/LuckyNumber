@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Rebirth
   image: {fileID: 21300000, guid: f9d969d8d0e944c41a329d4386838f45, type: 3}
   summary: Revive upon losing all health
-  cost: 
+  cost: 0400000004000000
   details: When your hit points fall to zero, recover with 50% of your max health.
     This card is consumed upon use
   effects:

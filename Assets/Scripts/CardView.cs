@@ -9,6 +9,9 @@ public class CardView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI summaryText;
     [SerializeField] private GameObject chargeBadge;
     [SerializeField] private TextMeshProUGUI chargeText;
+    [SerializeField] private Transform costGroup;
+    [SerializeField] private Image costDiePrefab;
+    [SerializeField] private Sprite[] diceFaces = new Sprite[6];
 
     public CardDefinition Definition => definition;
 
@@ -26,6 +29,22 @@ public class CardView : MonoBehaviour
         summaryText.text = card.summary;
 
         SetChargeLabel(string.Empty);
+        UpdateCostUI(card.cost);
+    }
+
+    private void UpdateCostUI(int[] cost)
+    {
+        foreach (Transform child in costGroup)
+        {
+            child.gameObject.SetActive(false);
+            Destroy(child.gameObject);
+        }
+
+        foreach (int value in cost)
+        {
+            Image die = Instantiate(costDiePrefab, costGroup);
+            die.sprite = diceFaces[value - 1];
+        }
     }
 
     public void SetChargeLabel(string label)

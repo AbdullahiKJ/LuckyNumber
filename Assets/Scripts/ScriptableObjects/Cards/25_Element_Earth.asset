@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Element Earth
   image: {fileID: 21300000, guid: a24bb2c3e176a4bd7b218176325af3eb, type: 3}
   summary: Take 50% damage for 3 turns
-  cost: 
+  cost: 0300000004000000
   details: Your defense is amplified by the power of earth. Receive only half of
     incoming damage for your next 3 hits
   effects:

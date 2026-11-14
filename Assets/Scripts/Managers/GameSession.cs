@@ -4,7 +4,7 @@ public class GameSession : MonoBehaviour
 {
     public static GameSession Instance { get; private set; }
 
-    public int LuckyNumber { get; private set; } = 1;
+    public int LuckyNumber { get; private set; } = 2;
 
     private void Awake()
     {

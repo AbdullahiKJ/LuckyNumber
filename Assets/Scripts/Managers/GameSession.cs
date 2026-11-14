@@ -20,6 +20,6 @@ public class GameSession : MonoBehaviour
 
     public void SetLuckyNumber(int number)
     {
-        LuckyNumber = Mathf.Clamp(number, 1, 6);
+        LuckyNumber = Mathf.Clamp(number, 2, 12);
     }
 }

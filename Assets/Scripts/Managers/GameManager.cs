@@ -1,8 +1,10 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    // References
+    [Header("Managers")]
     [SerializeField] private CardManager cards;
     [SerializeField] private CombatManager combat;
     [SerializeField] private DiceManager dice;
@@ -14,63 +16,133 @@ public class GameManager : MonoBehaviour
     public TurnManager Turns => turns;
     public UIManager UI => ui;
 
-    private int currentLevel;
-    [SerializeField] int maxLevel;
-    private GameState gameState;
+
+    [Header("Waves")]
+    [SerializeField] private WaveDefinition[] waves;
+    [SerializeField, Min(0f)] private float waveEndDelay = 2f;
+
+    [Header("Scenes")]
+    [SerializeField] private string menuScene = "Menu";
+
     enum GameState
     {
-        Active,
-        Paused,
-        GameOver
+        Transitioning,
+        Combat,
+        GameOver,
+        Victory
     }
 
-    private void Awake()
-    {
-        if (cards == null)
-            cards = GetComponent<CardManager>();
+    private GameState state = GameState.Transitioning;
+    private int currentWave;
+    private bool loadingScene;
 
-        if (combat == null)
-            combat = GetComponent<CombatManager>();
-
-        if (dice == null)
-            dice = GetComponent<DiceManager>();
-
-        if (turns == null)
-            turns = GetComponent<TurnManager>();
-
-        if (ui == null)
-            ui = GetComponent<UIManager>();
-
-        gameState = GameState.Active;
-    }
     private void OnEnable()
     {
         combat.Player.Died += GameOver;
+        combat.EnemiesDefeated += OnEnemiesDefeated;
     }
 
     private void OnDisable()
     {
         combat.Player.Died -= GameOver;
+        combat.EnemiesDefeated -= OnEnemiesDefeated;
     }
 
-    private void StartGame()
+    private void Start()
     {
-    }
+        ui.HideResults();
 
-    private void NextLevel()
-    {
+        if (waves == null || waves.Length == 0)
+        {
+            Debug.LogError("Assign at least one wave.", this);
+            return;
+        }
+
+        currentWave = 0;
+        StartCurrentWave();
     }
 
     public bool IsGameActive()
     {
-        return gameState == GameState.Active;
+        return state == GameState.Combat;
+    }
+
+    private void StartCurrentWave()
+    {
+        combat.SpawnWave(waves[currentWave]);
+
+        ui.RebuildEnemyUI(combat.Enemies);
+        ui.UpdateWaveUI(currentWave + 1, waves.Length);
+
+        turns.BuildRoundQueue();
+
+        state = GameState.Combat;
+        turns.CheckNextTurn();
+    }
+
+    private void OnEnemiesDefeated()
+    {
+        if (!IsGameActive())
+            return;
+
+        state = GameState.Transitioning;
+        StopCombatFlow();
+
+        StartCoroutine(AdvanceWave());
+    }
+
+    private IEnumerator AdvanceWave()
+    {
+        // Leave time for the final enemy's death presentation.
+        yield return new WaitForSeconds(waveEndDelay);
+
+        if (currentWave == waves.Length - 1)
+        {
+            state = GameState.Victory;
+            ui.ShowVictory();
+            yield break;
+        }
+
+        currentWave++;
+        StartCurrentWave();
     }
 
     private void GameOver()
     {
+        if (!IsGameActive())
+            return;
+
+        state = GameState.GameOver;
+
+        StopAllCoroutines();
+        StopCombatFlow();
+
+        ui.ShowGameOver();
     }
 
-    public void WinGame()
+    private void StopCombatFlow()
     {
+        turns.StopCombat();
+        combat.StopActions();
+        ui.SetCombatInputEnabled(false);
+        ui.CloseCards();
+    }
+
+    public void Retry()
+    {
+        if (loadingScene)
+            return;
+
+        loadingScene = true;
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void ReturnToMenu()
+    {
+        if (loadingScene)
+            return;
+
+        loadingScene = true;
+        SceneManager.LoadSceneAsync(menuScene);
     }
 }

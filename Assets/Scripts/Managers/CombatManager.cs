@@ -1,29 +1,46 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CombatManager : MonoBehaviour
 {
-    // private void [] cards
-    [SerializeField] private Player player;
-    [SerializeField] private Enemy[] enemies;
     [SerializeField] GameManager gameManager;
+    [SerializeField] private Player player;
+    [SerializeField] private Transform enemyContainer;
     [SerializeField] float playerTurnDelay = 2f;
+
+    private readonly List<Enemy> enemies = new();
 
     public Player Player => player;
     public IReadOnlyList<Enemy> Enemies => enemies;
+    public event Action EnemiesDefeated;
 
     private bool playerAttackInProgress;
+    private bool waveReported;
 
     private void Awake()
     {
-        if (gameManager == null)
-            gameManager = GetComponent<GameManager>();
-
-        // Assign the game manager to each enemy script and player script
-        foreach (Enemy enemy in enemies)
-            enemy.Game = gameManager;
-
         player.Game = gameManager;
+    }
+
+    public void SpawnWave(WaveDefinition wave)
+    {
+        ClearEnemies();
+        waveReported = false;
+
+        foreach (EnemySpawn spawn in wave.enemies)
+        {
+            Enemy enemy = Instantiate(
+                spawn.prefab,
+                spawn.spawnPoint.position,
+                spawn.spawnPoint.rotation,
+                enemyContainer);
+
+            enemy.Game = gameManager;
+            enemy.HealthChanged += OnEnemyHealthChanged;
+            enemy.gameObject.name = spawn.prefab.name;
+            enemies.Add(enemy);
+        }
     }
 
     public void PlayerAttack(int value, Enemy enemy)
@@ -32,15 +49,17 @@ public class CombatManager : MonoBehaviour
            enemy == null || !enemy.isActiveAndEnabled || !enemy.IsAlive)
             return;
 
+        playerAttackInProgress = true;
+
         // Damage calculation based on roll value and card effects
         player.Attack(enemy, value);
 
-        // todo: resolve any card effects
-
-        playerAttackInProgress = true;
+        // The attack may have defeated the last enemy.
+        if (!gameManager.IsGameActive())
+            return;
 
         // End the turn
-        Invoke("OnPlayerAttackFinished", playerTurnDelay);
+        Invoke(nameof(OnPlayerAttackFinished), playerTurnDelay);
     }
 
     public void OnPlayerAttackFinished()
@@ -50,6 +69,16 @@ public class CombatManager : MonoBehaviour
 
         playerAttackInProgress = false;
         gameManager.Turns.EndPlayerTurn();
+    }
+
+    private void OnEnemyHealthChanged(float current, float maximum)
+    {
+        if (current > 0f || waveReported ||
+            !gameManager.IsGameActive() || !CheckCombatEnd())
+            return;
+
+        waveReported = true;
+        EnemiesDefeated?.Invoke();
     }
 
     public void EnemyAttack(Enemy enemy)
@@ -70,4 +99,41 @@ public class CombatManager : MonoBehaviour
         return true;
     }
 
+    public void StopActions()
+    {
+        CancelInvoke();
+        playerAttackInProgress = false;
+
+        foreach (Enemy enemy in enemies)
+        {
+            if (enemy != null)
+                enemy.CancelInvoke();
+        }
+    }
+
+    private void ClearEnemies()
+    {
+        StopActions();
+
+        foreach (Enemy enemy in enemies)
+        {
+            if (enemy == null)
+                continue;
+
+            enemy.HealthChanged -= OnEnemyHealthChanged;
+            enemy.gameObject.SetActive(false);
+            Destroy(enemy.gameObject);
+        }
+
+        enemies.Clear();
+    }
+
+    private void OnDestroy()
+    {
+        foreach (Enemy enemy in enemies)
+        {
+            if (enemy != null)
+                enemy.HealthChanged -= OnEnemyHealthChanged;
+        }
+    }
 }

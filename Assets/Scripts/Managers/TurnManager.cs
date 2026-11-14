@@ -43,9 +43,7 @@ public class TurnManager : MonoBehaviour
 
         foreach (Enemy enemy in gameManager.Combat.Enemies)
         {
-            // todo: put this back later
-            // if (enemy.isActiveAndEnabled)
-            if (enemy != null)
+            if (enemy != null && enemy.isActiveAndEnabled && enemy.IsAlive)
             {
                 turnQueue.AddLast((TurnState.EnemyTurn, enemy));
             }
@@ -92,6 +90,9 @@ public class TurnManager : MonoBehaviour
 
     public void UseRoll()
     {
+        if (!gameManager.IsGameActive())
+            return;
+
         if (IsPlayerTurn && rollsRemaining > 0 && gameManager.Dice.TryRollDice())
         {
             rollsRemaining--;
@@ -137,6 +138,9 @@ public class TurnManager : MonoBehaviour
         // Trigger any status effects
         enemy.GetComponent<StatusController>().ResolveTurnStart();
 
+        if (!gameManager.IsGameActive())
+            yield break;
+
         // Wait for the hit animation to end
         while (enemy != null && enemy.isActiveAndEnabled &&
                 enemy.IsAlive && enemy.IsReactingToHit)
@@ -168,6 +172,9 @@ public class TurnManager : MonoBehaviour
 
     public void EndTurn()
     {
+        if (!gameManager.IsGameActive())
+            return;
+
         if (turnQueue.First == null)
             return;
 
@@ -201,5 +208,14 @@ public class TurnManager : MonoBehaviour
         }
 
         gameManager.UI.UpdateTurnUI(rows);
+    }
+
+    public void StopCombat()
+    {
+        StopAllCoroutines();
+        CancelInvoke();
+
+        turnQueue.Clear();
+        RefreshTurnUI();
     }
 }

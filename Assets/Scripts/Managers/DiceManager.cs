@@ -17,6 +17,8 @@ public class DiceManager : MonoBehaviour
     public event Action RollStarted;
     public event Action RollFinished;
 
+    private int luckyNumber;
+
     private void OnEnable()
     {
         GameManager gameManager = GetComponent<GameManager>();
@@ -31,6 +33,11 @@ public class DiceManager : MonoBehaviour
                 die.TurnManager = gameManager.Turns;
             }
         }
+
+        // get the lucky number
+        luckyNumber = GameSession.Instance != null
+           ? GameSession.Instance.LuckyNumber
+           : 1;
     }
 
     private void OnDisable()

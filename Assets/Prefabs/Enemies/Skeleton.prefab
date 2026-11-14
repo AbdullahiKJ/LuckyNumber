@@ -1331,7 +1331,7 @@ GameObject:
   - component: {fileID: 2945291989593350961}
   - component: {fileID: 8152719877320568289}
   m_Layer: 0
-  m_Name: SkeletonPAMaskTint
+  m_Name: Skeleton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1434,7 +1434,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Health
   animation: {fileID: 4217216740327769424}
   Game: {fileID: 0}
-  maxHealth: 100
+  maxHealth: 50
   attackDamage: 5
 --- !u!114 &7299256345396629291
 MonoBehaviour:

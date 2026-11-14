@@ -40,22 +40,21 @@ public class UIManager : MonoBehaviour
 
     private readonly List<CardView> ownedCardViews = new();
 
+    [Header("Results")]
+    [SerializeField] private GameObject victoryPanel;
+    [SerializeField] private GameObject gameOverPanel;
+
+    [Header("Wave")]
+    [SerializeField] private TextMeshProUGUI waveText;
+
+    private readonly List<EnemyHealthBar> enemyBars = new();
+
     private void Awake()
     {
         if (gameManager == null)
             gameManager = GetComponent<GameManager>();
 
         cam = Camera.main;
-
-        foreach (Enemy enemy in gameManager.Combat.Enemies)
-        {
-            if (enemy == null)
-                continue;
-
-            EnemyHealthBar bar = Instantiate(enemyHealthBarPrefab, enemyHealthBarLayer);
-            bar.Bind(enemy, cam, enemyHealthBarLayer);
-            bar.GetComponent<StatusUI>().Bind(enemy.GetComponent<StatusController>());
-        }
 
         // Disable cards and the card button on start
         CloseCards();
@@ -102,10 +101,9 @@ public class UIManager : MonoBehaviour
 
     public void EnableRollButton()
     {
-        if (rollButton != null)
-        {
-            rollButton.interactable = rollsRemaining > 0 && !gameManager.Dice.IsRolling;
-        }
+        SetCombatInputEnabled(
+            gameManager.IsGameActive() &&
+            gameManager.Turns.IsPlayerTurn);
     }
 
     private void DisableCardButtons()
@@ -207,5 +205,63 @@ public class UIManager : MonoBehaviour
 
             turnRows.Add(row);
         }
+    }
+
+    public void RebuildEnemyUI(IReadOnlyList<Enemy> enemies)
+    {
+        foreach (EnemyHealthBar bar in enemyBars)
+        {
+            if (bar == null)
+                continue;
+
+            bar.gameObject.SetActive(false);
+            Destroy(bar.gameObject);
+        }
+
+        enemyBars.Clear();
+
+        foreach (Enemy enemy in enemies)
+        {
+            EnemyHealthBar bar = Instantiate(
+                enemyHealthBarPrefab, enemyHealthBarLayer);
+
+            bar.Bind(enemy, cam, enemyHealthBarLayer);
+            bar.GetComponent<StatusUI>().Bind(
+                enemy.GetComponent<StatusController>());
+
+            enemyBars.Add(bar);
+        }
+    }
+
+    public void UpdateWaveUI(int current, int total)
+    {
+        waveText.text = $"Wave {current} / {total}";
+    }
+
+    public void HideResults()
+    {
+        victoryPanel.SetActive(false);
+        gameOverPanel.SetActive(false);
+    }
+
+    public void ShowVictory()
+    {
+        HideResults();
+        victoryPanel.SetActive(true);
+    }
+
+    public void ShowGameOver()
+    {
+        HideResults();
+        gameOverPanel.SetActive(true);
+    }
+
+    public void SetCombatInputEnabled(bool enabled)
+    {
+        rollButton.interactable = enabled &&
+            rollsRemaining > 0 && !gameManager.Dice.IsRolling;
+
+        ownedCardsButton.interactable = enabled;
+        shopCardsButton.interactable = enabled;
     }
 }

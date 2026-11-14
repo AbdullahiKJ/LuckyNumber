@@ -50,6 +50,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        AudioManager.Instance?.PlayBGMusic();
+
         ui.HideResults();
 
         if (waves == null || waves.Length == 0)
@@ -100,6 +102,7 @@ public class GameManager : MonoBehaviour
         {
             state = GameState.Victory;
             ui.ShowVictory();
+            AudioManager.Instance?.PlayVictory();
             yield break;
         }
 
@@ -118,6 +121,7 @@ public class GameManager : MonoBehaviour
         StopCombatFlow();
 
         ui.ShowGameOver();
+        AudioManager.Instance?.PlayGameOver();
     }
 
     private void StopCombatFlow()

@@ -14,6 +14,7 @@ public class MenuController : MonoBehaviour
 
     private void Start()
     {
+        AudioManager.Instance?.PlayBGMusic();
         startPanel.SetActive(true);
         luckyNumberPanel.SetActive(false);
         confirmButton.interactable = false;

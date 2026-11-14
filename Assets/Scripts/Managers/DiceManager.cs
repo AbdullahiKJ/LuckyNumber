@@ -77,6 +77,8 @@ public class DiceManager : MonoBehaviour
         // Invoke the roll started event
         RollStarted?.Invoke();
 
+        AudioManager.Instance?.PlayRoll();
+
         // Roll the die
         foreach (Dice die in pendingDice)
             die.Roll();
@@ -110,6 +112,7 @@ public class DiceManager : MonoBehaviour
             selectedDice.Add(die);
 
         die.SetHeld(held);
+        AudioManager.Instance?.PlayHold();
     }
     public int GetSelectedTotal() => GetTotal(selectedDice);
 

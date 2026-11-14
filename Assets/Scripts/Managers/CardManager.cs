@@ -88,6 +88,7 @@ public class CardManager : MonoBehaviour
         }
 
         CardsChanged?.Invoke();
+        AudioManager.Instance?.PlayAcquire();
         return true;
     }
 

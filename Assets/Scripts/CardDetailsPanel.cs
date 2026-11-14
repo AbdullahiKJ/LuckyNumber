@@ -8,6 +8,10 @@ public class CardDetailsPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private Button button;
+
+    [SerializeField] private Transform costGroup;
+    [SerializeField] private Image costDiePrefab;
+    [SerializeField] private Sprite[] diceFaces = new Sprite[6];
     public GameManager Game;
 
     private CardDefinition selectedCard;
@@ -21,8 +25,24 @@ public class CardDetailsPanel : MonoBehaviour
         descriptionText.text = card.details;
 
         RefreshAcquireButton();
+        UpdateCostUI(card.cost);
 
         gameObject.SetActive(true);
+    }
+
+    private void UpdateCostUI(int[] cost)
+    {
+        foreach (Transform child in costGroup)
+        {
+            child.gameObject.SetActive(false);
+            Destroy(child.gameObject);
+        }
+
+        foreach (int value in cost)
+        {
+            Image die = Instantiate(costDiePrefab, costGroup);
+            die.sprite = diceFaces[value - 1];
+        }
     }
 
     public void Close()

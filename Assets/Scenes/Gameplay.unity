@@ -1517,16 +1517,16 @@ MonoBehaviour:
     - prefab: {fileID: -4626755010240135202, guid: 443afc2412d74f44be8d5241437e576a, type: 3}
       spawnPoint: {fileID: 667445655}
   - enemies:
-    - prefab: {fileID: -4626755010240135202, guid: 443afc2412d74f44be8d5241437e576a, type: 3}
+    - prefab: {fileID: 7780277964150486977, guid: 010d35fed29e14e96b3c0eeb56ea8ecc, type: 3}
       spawnPoint: {fileID: 1403258666}
-    - prefab: {fileID: -4626755010240135202, guid: 443afc2412d74f44be8d5241437e576a, type: 3}
+    - prefab: {fileID: 8531098837542124217, guid: ff55cdd7ab140444a85b871553042c2a, type: 3}
       spawnPoint: {fileID: 772489939}
-    - prefab: {fileID: -4626755010240135202, guid: 443afc2412d74f44be8d5241437e576a, type: 3}
+    - prefab: {fileID: 7780277964150486977, guid: 010d35fed29e14e96b3c0eeb56ea8ecc, type: 3}
       spawnPoint: {fileID: 1248532177}
   - enemies:
-    - prefab: {fileID: -4626755010240135202, guid: 443afc2412d74f44be8d5241437e576a, type: 3}
+    - prefab: {fileID: 8288912774059803194, guid: 267583089c085491690a254ae5af04cb, type: 3}
       spawnPoint: {fileID: 1665385017}
-    - prefab: {fileID: -4626755010240135202, guid: 443afc2412d74f44be8d5241437e576a, type: 3}
+    - prefab: {fileID: 8288912774059803194, guid: 267583089c085491690a254ae5af04cb, type: 3}
       spawnPoint: {fileID: 667445655}
   waveEndDelay: 2
   menuScene: Menu
